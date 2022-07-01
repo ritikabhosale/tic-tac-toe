@@ -1,6 +1,6 @@
 const { createRouter } = require('server');
-const { notFound } = require('./handlers/notFound.js');
-const { serveFileContent } = require('./handlers/staticContent.js');
+const { notFound } = require('./app/handlers/notFound');
+const { serveFileContent } = require('./app/handlers/staticContent.js');
 
 const app = (serveFrom) => {
   const handlers = [serveFileContent(serveFrom), notFound];

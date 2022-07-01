@@ -2,10 +2,19 @@
 
 <head>
   <title>TIC-TAC-TOE</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
   <h1>TIC-TAC-TOE</h1>
+  <div class="instructions">
+    <p class="greetings">Heyy buddy!!! Welcome to the game</p>
+    <p>This is a two-players game. There will be a 3*3 grid tic-tac board. The players will seek alternate turns to
+      complete a row, a column, or a diagonal with either three O's or three X's drawn in the spaces of the grid</p>
+  </div>
+  <form action="/start-game" method="post">
+    <input class="start-game-button" type="submit" value="start-game">
+  </form>
 </body>
 
 </html>
