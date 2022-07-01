@@ -1,7 +1,4 @@
-const { router, startServer } = require('server');
+const { startServer } = require('server');
+const { router } = require('./src/app/app.js');
 
-const handler = (request, response) => {
-  response.end('hello');
-};
-
-startServer(4444, handler);
+startServer(4444, router);
