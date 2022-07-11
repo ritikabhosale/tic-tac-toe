@@ -1,21 +1,40 @@
 class Game {
-  #numOfPlayers;
   #board;
-  constructor(numOfPlayers) {
-    this.#numOfPlayers = numOfPlayers;
+  #players;
+  #id;
+  constructor(id) {
+    this.#id = id;
     this.#board = Array(3).fill(Array(3).fill(''));
+    this.#players = [];
   }
 
   getBoard() {
-    return this.#board;
+    return this.#board.slice(0);
   }
 
-  gameReady() {
-    return this.#numOfPlayers < 1;
+  addPlayer(playerId) {
+    this.#players.push(playerId);
   }
 
-  addPlayer() {
-    this.#numOfPlayers--;
+  isSpotAvailable() {
+    return this.#players.length < 2;
+  }
+
+  get id() {
+    return this.#id;
+  }
+
+  getMessage() {
+    return this.isSpotAvailable() ? 'Waiting for another player' : '';
+  }
+
+  toJSON() {
+    const game = {
+      gameId: this.#id,
+      board: this.#board,
+      message: this.getMessage()
+    }
+    return JSON.stringify(game);
   }
 }
 
