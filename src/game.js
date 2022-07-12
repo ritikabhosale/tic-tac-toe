@@ -5,7 +5,7 @@ class Game {
   #lastMoved;
   constructor(id) {
     this.#id = id;
-    this.#board = [['', '', ''], ['', '', ''], ['', '', '']];
+    this.#board = Array(9).fill('');
     this.#players = [];
     this.#lastMoved;
   }
@@ -46,30 +46,21 @@ class Game {
     return '';
   }
 
-  #cellPosition(id) {
-    const row = Math.floor(id / 3);
-    const col = id % 3;
-    return [row, col];
-  };
-
   updateGame(cellId, userName) {
     const player = this.#players.find(({ playerId }) => playerId === userName);
     this.#lastMoved = player;
-    const [row, col] = this.#cellPosition(cellId - 1);
-    this.#board[row][col] = player.symbol;
+    this.#board[cellId - 1] = player.symbol;
   }
 
   #hasWon(symbol) {
     const winningMoves = [[1, 4, 7], [0, 3, 6], [3, 5, 8], [0, 1, 2], [3, 4, 5], [6, 7, 8], [2, 4, 6], [0, 4, 8]];
-    const board = this.#board.flat();
     return winningMoves.some(move => {
-      return move.every(cellId => board[cellId] === symbol);
+      return move.every(cellId => this.#board[cellId] === symbol);
     });
   }
 
   #allMovesPlayed() {
-    const board = this.#board.flat();
-    return !board.includes('');
+    return !this.#board.includes('');
   }
 
   #isOver() {

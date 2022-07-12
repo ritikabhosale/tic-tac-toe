@@ -32,15 +32,30 @@ const generateHtml = (template) => {
   return tagElement;
 };
 
+const partitionBy = (chunkedList, element, chunkSize) => {
+  const lastChunk = chunkedList[chunkedList.length - 1];
+
+  if (lastChunk.length < chunkSize) {
+    lastChunk.push(element);
+    return chunkedList;
+  }
+
+  chunkedList.push([element]);
+  return chunkedList;
+};
+
 const convertToTemplate = (board) => {
   let id = 0;
-  return ['div.board',
-    board.map((row) =>
-      ['div.row', row.map((innerText) => {
-        id++;
-        return [`div.cell#${id}`, innerText];
-      })])
-  ];
+  const cells = board.map(innerText => {
+    id++;
+    return [`div.cell#${id}`, innerText]
+  });
+
+  const rows = cells.reduce((chunkedList, element) => {
+    return partitionBy(chunkedList, element, 3)
+  }, [[]]);
+
+  return ['div.board', rows.map((row) => ['div.row', row])];
 };
 
 const drawElement = (template, parentElement) => {
