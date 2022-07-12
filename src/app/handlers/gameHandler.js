@@ -7,4 +7,12 @@ const gameHandler = (request, response) => {
   response.end(gamePage);
 };
 
-module.exports = { gameHandler };
+const registerMove = games => (request, response) => {
+  const { gameId, email } = request.session;
+  const { id } = request.bodyParams;
+  const game = games[gameId];
+  game.updateGame(id, email);
+  response.end();
+};
+
+module.exports = { gameHandler, registerMove };

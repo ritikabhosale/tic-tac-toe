@@ -1,7 +1,7 @@
 const { hostHandler } = require('./handlers/hostHandler.js');
 const { serveLoginForm, login } = require('./handlers/loginHandler.js');
 const { playGame } = require('./handlers/play.js');
-const { gameHandler } = require('./handlers/gameHandler.js');
+const { gameHandler, registerMove } = require('./handlers/gameHandler.js');
 const { serveGameAPI } = require('./handlers/apiHandler.js');
 const { joinHandler, serveJoinForm } = require('./handlers/joinHandler.js');
 const loginFormTemplate = './src/app/template/login.html';
@@ -20,7 +20,8 @@ const routes = {
   '/host': { GET: hostHandler(games) },
   '/join': { GET: serveJoinForm(joinTemplate), POST: joinHandler(games) },
   '/game': { GET: gameHandler },
-  '/api/game': { GET: serveGameAPI(games) }
+  '/api/game': { GET: serveGameAPI(games) },
+  '/register-move': { POST: registerMove(games) }
 };
 
 module.exports = { routes, sessions };
