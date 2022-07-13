@@ -25,7 +25,6 @@ const createApp = (serverConfig, sessions, games, logger, fs) => {
   router.middleware(injectSession(sessions));
   router.middleware(setContentType);
   router.middleware(logRequest(logger));
-  router.get('/', serveFileContent(serverConfig.root, fs));
   router.get('/login', serveLoginForm(loginFormTemplate, fs));
   router.post('/login', login(sessions));
   router.get('/play-game', playGame(optionsTemplate, fs));
@@ -35,6 +34,7 @@ const createApp = (serverConfig, sessions, games, logger, fs) => {
   router.get('/api/game', serveGameAPI(games));
   router.get('/game', gameHandler(boardTemplate, fs));
   router.post('/register-move', registerMove(games));
+  router.get('/', serveFileContent(serverConfig.root, fs));
   router.middleware(notFound);
   return app;
 };

@@ -31,6 +31,11 @@ const injectSession = sessions => (request, response, next) => {
 };
 
 const login = sessions => (request, response) => {
+  if (request.session) {
+    response.setHeader('content-type', 'text/plain');
+    response.end('You are already logged in.');
+    return;
+  }
   const session = createSession(request.bodyParams.email);
   response.setHeader('set-cookie', 'sessionId=' + session.sessionId);
   sessions[session.sessionId] = session;
@@ -41,6 +46,11 @@ const login = sessions => (request, response) => {
 };
 
 const serveLoginForm = (formTemplate, fs) => (request, response) => {
+  if (request.session) {
+    response.setHeader('content-type', 'text/plain');
+    response.end('You are already logged in.');
+    return;
+  }
   const form = fs.readFileSync(formTemplate, 'utf8');
   response.end(form);
 };
