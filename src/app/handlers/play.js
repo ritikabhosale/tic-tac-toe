@@ -1,13 +1,4 @@
-const { Game } = require('../../game.js');
 const fs = require('fs');
-
-const loadGame = numOfPlayers => {
-  const game = new Game(numOfPlayers);
-  return (request, response, next) => {
-    request.game = game;
-    next();
-  };
-}
 
 const playGame = optionsTemplate => (request, response) => {
   if (!request.session) {

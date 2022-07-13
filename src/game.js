@@ -2,12 +2,12 @@ class Game {
   #board;
   #players;
   #id;
-  #lastMoved;
+  #currentPlayer;
   constructor(id) {
     this.#id = id;
     this.#board = Array(9).fill('');
     this.#players = [];
-    this.#lastMoved;
+    this.#currentPlayer;
   }
 
   getBoard() {
@@ -21,7 +21,7 @@ class Game {
     }
     const player = { playerId, symbol };
 
-    this.#lastMoved = player;
+    this.#currentPlayer = player;
     this.#players.push(player);
   }
 
@@ -34,11 +34,13 @@ class Game {
   }
 
   getMessage() {
+    const winner = this.#getWinner();
+
     if (this.isSpotAvailable()) {
       return 'Waiting for another player';
     }
-    if (this.#hasWon(this.#lastMoved.symbol)) {
-      return `${this.#lastMoved.playerId} has won the game.`;
+    if (winner) {
+      return `${winner.playerId} has won the game.`;
     }
     if (this.#isOver()) {
       return 'It\'s a draw.';
@@ -48,15 +50,27 @@ class Game {
 
   updateGame(cellId, userName) {
     const player = this.#players.find(({ playerId }) => playerId === userName);
-    this.#lastMoved = player;
-    this.#board[cellId - 1] = player.symbol;
+    if (userName !== this.#currentPlayer.playerId) {
+      this.#board[cellId - 1] = player.symbol;
+      this.#currentPlayer = player;
+    }
   }
 
-  #hasWon(symbol) {
+  #isMatch(moves, symbol) {
+    return moves.every(cell => this.#board[cell] === symbol);
+  }
+
+  #getWinner() {
     const winningMoves = [[1, 4, 7], [0, 3, 6], [3, 5, 8], [0, 1, 2], [3, 4, 5], [6, 7, 8], [2, 4, 6], [0, 4, 8]];
-    return winningMoves.some(move => {
-      return move.every(cellId => this.#board[cellId] === symbol);
-    });
+    for (let index = 0; index < winningMoves.length; index++) {
+      if (this.#isMatch(winningMoves[index], 'X')) {
+        return this.#players[0];
+      }
+      if (this.#isMatch(winningMoves[index], 'O')) {
+        return this.#players[1];
+      }
+    }
+    return null;
   }
 
   #allMovesPlayed() {
@@ -64,15 +78,20 @@ class Game {
   }
 
   #isOver() {
-    return this.#hasWon(this.#lastMoved.symbol) || this.#allMovesPlayed();
+    return this.#getWinner() || this.#allMovesPlayed();
   }
 
   toJSON() {
+    const winner = this.#getWinner();
+
     const game = {
       gameId: this.#id,
       board: this.#board,
       message: this.getMessage(),
-      isOver: this.#isOver()
+      isOver: this.#isOver(),
+    };
+    if (winner) {
+      game.winner = winner;
     }
     return JSON.stringify(game);
   }

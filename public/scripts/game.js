@@ -71,7 +71,16 @@ const cleanGame = (gameElement) => {
 
 const stopGame = boardElement => {
   boardElement.removeEventListener('click', registerMove);
-}
+};
+
+const registerMove = (event) => {
+  const { id } = event.target;
+  const request = { url: '/register-move', method: 'POST', body: `id=${id}` };
+  createXHR(request, () => {
+    const request = { url: '/api/game', method: 'GET' };
+    createXHR(request, generateBoard);
+  });
+};
 
 const generateBoard = (xhr) => {
   const gameElement = document.querySelector('.game');
@@ -92,18 +101,11 @@ const generateBoard = (xhr) => {
   boardElement.addEventListener('click', registerMove);
 };
 
-const registerMove = (event) => {
-  const { id } = event.target;
-  const request = { url: '/register-move', method: 'POST', body: `id=${id}` };
-  createXHR(request, () => {
-    const request = { url: '/api/game', method: 'GET' };
-    createXHR(request, generateBoard);
-  });
-};
-
 const main = () => {
   const request = { url: '/api/game', method: 'GET' };
-  createXHR(request, generateBoard);
+  setInterval(() => {
+    createXHR(request, generateBoard);
+  }, 500);
 };
 
 window.onload = main;
