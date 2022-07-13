@@ -6,7 +6,8 @@ const mimeTypes = {
   '.jpg': 'image/jpg',
   '.css': 'text/css',
   '.pdf': 'application/pdf',
-  '.gif': 'image/gif'
+  '.gif': 'image/gif',
+  '.txt': 'text/plain',
 };
 
 const getMimeType = (fileName) => {

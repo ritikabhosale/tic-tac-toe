@@ -1,18 +1,57 @@
-const { app } = require('../src/app.js');
+const { createApp } = require('../src/app.js');
 const request = require('supertest');
+const assert = require('assert');
 
-describe('app', () => {
-  it('should route to not found on /abc ', (done) => {
-    const req = request(app('./someDir'));
+const mockReadFile = (expectedFile, content) => {
+  return (fileName, callback) => {
+
+    try {
+      assert.strictEqual(fileName, expectedFile);
+    } catch (error) {
+      const err = 'can\'t read file';
+      callback(err);
+      return;
+    }
+    callback(null, content);
+  }
+};
+
+describe('GET /abc', () => {
+  const serverConfig = { root: '/someDir' };
+  const fs = {
+    readFile: mockReadFile('./someDir/hello', 'hello'),
+    readFileSync: () => { },
+  };
+  it('should route to not found', (done) => {
+    const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
     req.get('/abc')
       .expect(404, 'Page Not Found', done)
       .expect('content-type', /plain/)
   });
-  it('should send static content', (done) => {
-    const req = request(app('./public'));
-    req.get('/index.html')
-      .expect(200, done)
-      .expect('content-type', /html/)
-      .expect('content-length', "557")
+});
+
+describe('GET /hello.txt', () => {
+  it('should route to  hello.txt', (done) => {
+    const serverConfig = { root: '/public' };
+    const fs = {
+      readFile: mockReadFile('/public/hello.txt', 'hello'),
+      readFileSync: () => { },
+    };
+    const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
+    req.get('/hello.txt')
+      .expect(200, 'hello', done)
+      .expect('content-type', /plain/)
+  });
+
+  it('should route to not found for bye.txt', (done) => {
+    const serverConfig = { root: '/public' };
+    const fs = {
+      readFile: mockReadFile('/public/hello.txt', 'hello'),
+      readFileSync: () => { },
+    };
+    const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
+    req.get('/bye.txt')
+      .expect(404, 'Page Not Found', done)
+      .expect('content-type', /plain/)
   });
 });
