@@ -120,6 +120,7 @@ const generateBoard = (xhr) => {
 };
 
 const main = () => {
+  console.log('hello in main');
   const request = { url: '/api/game', method: 'GET' };
   setInterval(() => {
     createXHR(request, generateBoard);

@@ -1,5 +1,6 @@
 const gameHandler = (boardTemplate, fs) => (request, response) => {
   const gamePage = fs.readFileSync(boardTemplate, 'utf8');
+  response.setHeader('content-type', 'text/html');
   response.end(gamePage);
 };
 

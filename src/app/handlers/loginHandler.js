@@ -1,33 +1,6 @@
-const parseCookies = cookiesAsString => {
-  const cookies = {};
-  if (cookiesAsString) {
-    cookiesAsString.split(';').forEach(cookieAsString => {
-      const [name, value] = cookieAsString.split('=');
-      cookies[name] = value;
-    });
-  }
-  return cookies;
-};
-
-const injectCookies = (request, response, next) => {
-  const cookiesAsString = request.headers.cookie;
-  const cookies = parseCookies(cookiesAsString);
-  request.cookies = cookies;
-  next();
-};
-
 const createSession = email => {
   const time = new Date();
   return { sessionId: time.getTime(), time, email };
-};
-
-const injectSession = sessions => (request, response, next) => {
-  const { sessionId } = request.cookies;
-  if (sessionId) {
-    request.session = sessions[sessionId];
-  }
-  next();
-  return;
 };
 
 const login = sessions => (request, response) => {
@@ -56,4 +29,4 @@ const serveLoginForm = (formTemplate, fs) => (request, response) => {
 };
 
 
-module.exports = { login, injectCookies, injectSession, serveLoginForm };
+module.exports = { login, serveLoginForm };

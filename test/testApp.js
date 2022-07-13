@@ -64,7 +64,7 @@ describe('GET /hello.txt', () => {
 describe('GET /login', () => {
   const serverConfig = { root: '/public' };
   const fs = {
-    readFile: () => { },
+    readFile: mockReadFile('/public/hello.txt', 'hello'),
     readFileSync: mockReadFileSync('./src/app/template/login.html', 'utf8', 'template')
   };
 

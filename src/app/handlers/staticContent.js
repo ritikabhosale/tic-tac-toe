@@ -8,10 +8,10 @@ const serveFileContent = (serveFrom, fs) => (request, response, next) => {
   fs.readFile(fileName, (err, content) => {
     if (err) {
       next();
+      return;
     }
     response.end(content);
   });
-
 };
 
 module.exports = { serveFileContent };
