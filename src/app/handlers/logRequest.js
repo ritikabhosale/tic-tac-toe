@@ -1,5 +1,5 @@
-const logRequest = (request, response, next) => {
-  console.log(request.method, request.url.pathname);
+const logRequest = (logger) => (request, response, next) => {
+  logger(request.method, request.url);
   next();
 };
 

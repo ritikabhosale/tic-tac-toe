@@ -1,10 +1,4 @@
-const toSearchParams = (searchParams) => {
-  let entries = {};
-  for (const [key, value] of searchParams.entries()) {
-    entries[key] = value;
-  }
-  return entries;
-};
+const { toSearchParams } = require("./parseSearchParams");
 
 const parseBodyParams = (request, response, next) => {
   let body = '';

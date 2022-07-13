@@ -1,6 +1,4 @@
-const fs = require('fs');
-
-const serveJoinForm = template => (request, response) => {
+const serveJoinForm = (template, fs) => (request, response) => {
   const form = fs.readFileSync(template, 'utf8');
   response.end(form);
   return;

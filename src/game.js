@@ -2,12 +2,12 @@ class Game {
   #board;
   #players;
   #id;
-  #currentPlayer;
+  #lastMovedPlayer;
   constructor(id) {
     this.#id = id;
     this.#board = Array(9).fill('');
     this.#players = [];
-    this.#currentPlayer;
+    this.#lastMovedPlayer;
   }
 
   getBoard() {
@@ -20,8 +20,7 @@ class Game {
       symbol = 'X';
     }
     const player = { playerId, symbol };
-
-    this.#currentPlayer = player;
+    this.#lastMovedPlayer = player;
     this.#players.push(player);
   }
 
@@ -33,26 +32,12 @@ class Game {
     return this.#id;
   }
 
-  getMessage() {
-    const winner = this.#getWinner();
-
-    if (this.isSpotAvailable()) {
-      return 'Waiting for another player';
-    }
-    if (winner) {
-      return `${winner.playerId} has won the game.`;
-    }
-    if (this.#isOver()) {
-      return 'It\'s a draw.';
-    }
-    return '';
-  }
-
-  updateGame(cellId, userName) {
-    const player = this.#players.find(({ playerId }) => playerId === userName);
-    if (userName !== this.#currentPlayer.playerId) {
-      this.#board[cellId - 1] = player.symbol;
-      this.#currentPlayer = player;
+  updateGame(cellId, currentPlayerId) {
+    const currentPlayer = this.#players.find(({ playerId }) =>
+      playerId === currentPlayerId);
+    if (currentPlayerId !== this.#lastMovedPlayer.playerId) {
+      this.#board[cellId - 1] = currentPlayer.symbol;
+      this.#lastMovedPlayer = currentPlayer;
     }
   }
 
@@ -73,26 +58,31 @@ class Game {
     return null;
   }
 
-  #allMovesPlayed() {
+  #isDrawn() {
     return !this.#board.includes('');
   }
 
   #isOver() {
-    return this.#getWinner() || this.#allMovesPlayed();
+    return this.#getWinner() ? true : false || this.#isDrawn();
   }
 
   toJSON() {
-    const winner = this.#getWinner();
+    const result = {
+      isOver: this.#isOver()
+    }
+    if (this.#isOver()) {
+      result.draw = this.#isDrawn();
+    }
+    if (this.#getWinner()) {
+      result.winner = this.#getWinner();
+    }
 
     const game = {
       gameId: this.#id,
       board: this.#board,
-      message: this.getMessage(),
-      isOver: this.#isOver(),
+      ready: !this.isSpotAvailable(),
+      result
     };
-    if (winner) {
-      game.winner = winner;
-    }
     return JSON.stringify(game);
   }
 }

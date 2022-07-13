@@ -1,9 +1,5 @@
-const getGamePage = (fs = require('fs')) => {
-  return fs.readFileSync('./src/app/template/board.html', 'utf8');
-};
-
-const gameHandler = (request, response) => {
-  const gamePage = getGamePage();
+const gameHandler = (boardTemplate, fs) => (request, response) => {
+  const gamePage = fs.readFileSync(boardTemplate, 'utf8');
   response.end(gamePage);
 };
 

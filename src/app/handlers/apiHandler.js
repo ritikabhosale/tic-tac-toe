@@ -3,6 +3,7 @@ const serveGameAPI = games => (request, response) => {
     response.statusCode = 302;
     response.setHeader('location', '/login');
     response.end();
+    return;
   }
 
   const { gameId } = request.session;

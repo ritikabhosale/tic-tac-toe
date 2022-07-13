@@ -1,4 +1,9 @@
 const { startServer } = require('server');
-const { app } = require('./src/app.js');
+const { createApp } = require('./src/app.js');
 
-startServer(4444, app('./public'));
+const fs = require('fs');
+const serverConfig = {
+  root: './public'
+};
+
+startServer(4444, createApp(serverConfig, {}, {}, console.log, fs));

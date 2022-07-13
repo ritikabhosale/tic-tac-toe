@@ -1,6 +1,4 @@
-const fs = require('fs');
-
-const playGame = optionsTemplate => (request, response) => {
+const playGame = (optionsTemplate, fs) => (request, response) => {
   if (!request.session) {
     response.statusCode = 302;
     response.setHeader('location', '/login');
@@ -12,4 +10,4 @@ const playGame = optionsTemplate => (request, response) => {
   return;
 };
 
-module.exports = { loadGame, playGame };
+module.exports = { playGame };

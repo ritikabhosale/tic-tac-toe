@@ -1,5 +1,3 @@
-const fs = require('fs');
-
 const parseCookies = cookiesAsString => {
   const cookies = {};
   if (cookiesAsString) {
@@ -42,7 +40,7 @@ const login = sessions => (request, response) => {
   return;
 };
 
-const serveLoginForm = formTemplate => (request, response) => {
+const serveLoginForm = (formTemplate, fs) => (request, response) => {
   const form = fs.readFileSync(formTemplate, 'utf8');
   response.end(form);
 };

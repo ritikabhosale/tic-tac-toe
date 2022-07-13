@@ -5,6 +5,24 @@ const createXHR = ({ method, url, body }, onload) => {
   xhr.send(body);
 };
 
+const getMessage = ({ ready, result }) => {
+  console.log(ready, result);
+  if (!ready) {
+    return 'Waiting for another player';
+  }
+  const { isOver, draw, winner } = result;
+  if (!isOver) {
+    return 'current player name';
+  }
+  if (winner) {
+    return `${winner.playerId} has won the game.`;
+  }
+  if (draw) {
+    return 'It\'s a draw.';
+  }
+  return '';
+}
+
 const splitTag = (tag) => {
   const [tagName, attributes] = tag.split('.');
   const [className, id] = attributes.split('#');
@@ -91,10 +109,10 @@ const generateBoard = (xhr) => {
 
   drawElement(['div.gameId', game.gameId], gameElement);
   drawElement(template, gameElement);
-  drawElement(['div.message', game.message], gameElement);
+  drawElement(['div.message', getMessage(game)], gameElement);
 
   const boardElement = document.querySelector('.board');
-  if (game.isOver) {
+  if (game.result.isOver) {
     stopGame(boardElement);
     return;
   }
