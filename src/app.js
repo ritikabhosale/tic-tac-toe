@@ -5,7 +5,7 @@ const { logRequest } = require('./app/handlers/logRequest.js');
 const { setContentType } = require('./app/handlers/setContentType.js');
 const { parseBodyParams } = require('./app/handlers/parseBodyParams.js');
 const { serveLoginForm, login } = require('./app/handlers/loginHandler.js');
-const { serveSignupForm, singup } = require('./app/handlers/signupHandler.js');
+const { serveSignupForm, signup } = require('./app/handlers/signupHandler.js');
 const { parseSearchParams } = require('./app/handlers/parseSearchParams.js');
 const { playGame } = require('./app/handlers/play.js');
 const { hostHandler } = require('./app/handlers/hostHandler.js');
@@ -43,7 +43,7 @@ const createApp = (serverConfig, sessions, games, logger, fs) => {
   router.get('/login', serveLoginForm(loginFormTemplate, fs));
   router.post('/login', login(sessions, users));
   router.get('/sign-up', serveSignupForm(signupFormTemplate, fs));
-  router.post('/sign-up', singup(serverConfig.usersData, users, fs));
+  router.post('/sign-up', signup(serverConfig.usersData, users, fs));
   router.get('/play-game', playGame(optionsTemplate, fs));
   router.get('/host', hostHandler(games));
   router.get('/join', serveJoinForm(joinTemplate, fs));

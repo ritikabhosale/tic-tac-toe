@@ -17,9 +17,9 @@ const fieldsAbsent = ({ username, password }) => {
 
 const login = (sessions, users) => (request, response) => {
   if (request.session) {
-    const status = { success: true, message: 'Already logged in' };
-    response.setHeader('content-type', 'application/json');
-    response.end(JSON.stringify(status));
+    response.setHeader('location', '/');
+    response.statusCode = 302;
+    response.end();
     return;
   }
 
@@ -50,9 +50,9 @@ const login = (sessions, users) => (request, response) => {
 
 const serveLoginForm = (formTemplate, fs) => (request, response) => {
   if (request.session) {
-    const status = { success: true, message: 'Already logged in' }
-    response.setHeader('content-type', 'application/json');
-    response.end(JSON.stringify(status));
+    response.setHeader('location', '/');
+    response.statusCode = 302;
+    response.end();
     return;
   }
   const form = fs.readFileSync(formTemplate, 'utf8');

@@ -83,14 +83,12 @@ describe('GET /login', () => {
       .expect('content-type', /html/)
   });
 
-  it('should send a message of already logged in.', (done) => {
-    const status = { success: true, message: 'Already logged in' };
+  it('should redirect to home page when already logged in.', (done) => {
     const sessions = { '1': { sessionId: '1', username: 'a@b.c', time: '12' } };
     const req = request(createApp(serverConfig, sessions, {}, () => { }, fs));
     req.get('/login')
       .set('Cookie', ['sessionId=1'])
-      .expect(200, status, done)
-      .expect('content-type', /json/)
+      .expect(302, done)
   });
 });
 
@@ -135,13 +133,12 @@ describe('POST /login', () => {
   });
 
   it('should redirect send message already logged in', (done) => {
-    const status = { success: true, message: 'Already logged in' };
     const sessions = { '1': { sessionId: '1', username: 'a@b.c', time: '12' } };
     const req = request(createApp(serverConfig, sessions, {}, () => { }, fs));
     req.post('/login')
       .set('Cookie', ['sessionId=1'])
-      .expect(200, status, done)
-      .expect('content-type', /json/)
+      .expect(302, done)
+      .expect('content-type', /html/)
   });
 });
 
@@ -162,14 +159,12 @@ describe('GET /sign-up', () => {
       .expect('content-type', /html/)
   });
 
-  it('should send a message of already logged in.', (done) => {
-    const status = { success: true, message: 'Already logged in' };
+  it('should redirect to home page when already logged in.', (done) => {
     const sessions = { '1': { sessionId: '1', username: 'a@b.c', time: '12' } };
     const req = request(createApp(serverConfig, sessions, {}, () => { }, fs));
     req.get('/sign-up')
       .set('Cookie', ['sessionId=1'])
-      .expect(200, status, done)
-      .expect('content-type', /json/)
+      .expect(302, done)
   });
 });
 
@@ -192,13 +187,41 @@ describe('POST /sign-up', () => {
       JSON.stringify(updatedUsers),
       'utf8')
   };
+
   it('should persist user data', (done) => {
     const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
-    const status = { sucess: true, message: 'Signup Successfull' };
+    const status = { success: true, message: 'Signup Successfull' };
     req.post('/sign-up')
       .send('username=rishabh&password=bcd')
       .set('content-type', 'application/x-www-form-urlencoded')
       .expect(200, status, done)
       .expect('content-type', /json/)
+  });
+
+  it('should not allow duplicate username', (done) => {
+    const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
+    const status = { success: false, message: 'User already exists' };
+    req.post('/sign-up')
+      .send('username=abc&password=bcd')
+      .set('content-type', 'application/x-www-form-urlencoded')
+      .expect(409, status, done)
+      .expect('content-type', /json/)
+  });
+
+  it('should not allow if mandatory fields are empty', (done) => {
+    const status = { success: false, message: 'All fields required' };
+    const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
+    req.post('/sign-up')
+      .set('content-type', 'application/x-www-form-urlencoded')
+      .expect(400, status, done)
+      .expect('content-type', /json/)
+  });
+
+  it('should redirect to home page when already logged in', (done) => {
+    const sessions = { '1': { sessionId: '1', username: 'a@b.c', time: '12' } };
+    const req = request(createApp(serverConfig, sessions, {}, () => { }, fs));
+    req.post('/sign-up')
+      .set('Cookie', ['sessionId=1'])
+      .expect(302, done)
   });
 });
