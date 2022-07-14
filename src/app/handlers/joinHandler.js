@@ -11,7 +11,7 @@ const joinHandler = games => (request, response) => {
     response.end('Game already has two players.');
     return;
   }
-  game.addPlayer(request.session.email);
+  game.addPlayer(request.session.username);
   request.session.gameId = gameId;
   response.setHeader('location', '/game');
   response.statusCode = 302;

@@ -5,10 +5,10 @@ const gameHandler = (boardTemplate, fs) => (request, response) => {
 };
 
 const registerMove = games => (request, response) => {
-  const { gameId, email } = request.session;
+  const { gameId, username } = request.session;
   const { id } = request.bodyParams;
   const game = games[gameId];
-  game.updateGame(id, email);
+  game.updateGame(id, username);
   response.end();
 };
 

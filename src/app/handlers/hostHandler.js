@@ -8,7 +8,7 @@ const hostHandler = games => {
       location = '/game';
       const game = new Game(gameId);
       games[gameId] = game;
-      game.addPlayer(request.session.email);
+      game.addPlayer(request.session.username);
       request.session.gameId = gameId;
       gameId++;
     }
