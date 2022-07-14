@@ -4,7 +4,6 @@ const assert = require('assert');
 
 const mockReadFile = (expectedFile, content) => {
   return (fileName, callback) => {
-
     try {
       assert.strictEqual(fileName, expectedFile);
     } catch (error) {
@@ -50,5 +49,29 @@ describe('GET /hello.txt', () => {
     req.get('/bye.txt')
       .expect(404, 'Page Not Found', done)
       .expect('content-type', /plain/)
+  });
+});
+
+describe('GET /logout', () => {
+  const serverConfig = { root: '/public' };
+  const fs = {
+    readFile: () => { },
+    readFileSync: () => { },
+  };
+
+  it('should send setCookie header with maxage 0.', (done) => {
+    const sessions = { '1': { sessionId: '1', username: 'a@b.c', time: '12' } };
+    const req = request(createApp(serverConfig, sessions, {}, () => { }, fs));
+    req.get('/logout')
+      .set('Cookie', ['sessionId=1'])
+      .expect(302, done)
+      .expect('set-cookie', 'sessionId=0;max-age:0')
+  });
+
+  it('should redirect to home page if user tries to logout without logging in', (done) => {
+    const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
+    req.get('/logout')
+      .expect(302, done)
+      .expect('location', '/')
   });
 });

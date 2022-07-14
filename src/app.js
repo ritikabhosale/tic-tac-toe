@@ -14,6 +14,7 @@ const { gameHandler, registerMove } = require('./app/handlers/gameHandler.js');
 const { serveGameAPI } = require('./app/handlers/apiHandler.js');
 const { injectCookies } = require('./app/handlers/injectCookies.js');
 const { injectSession } = require('./app/handlers/injectSession.js');
+const { logout } = require('./app/handlers/logout.js');
 
 const optionsTemplate = './src/app/template/options.html';
 const loginFormTemplate = './src/app/template/login.html';
@@ -42,6 +43,7 @@ const createApp = (serverConfig, sessions, games, logger, fs) => {
   router.middleware(logRequest(logger));
   router.get('/login', serveLoginForm(loginFormTemplate, fs));
   router.post('/login', login(sessions, users));
+  router.get('/logout', logout(sessions));
   router.get('/sign-up', serveSignupForm(signupFormTemplate, fs));
   router.post('/sign-up', signup(serverConfig.usersData, users, fs));
   router.get('/play-game', playGame(optionsTemplate, fs));
