@@ -14,7 +14,7 @@ const gameExists = (games, gameId) => {
 };
 
 const joinHandler = games => (request, response) => {
-  const gameId = request.bodyParams['game-id'];
+  const gameId = request.body['game-id'];
 
   if (!request.session) {
     response.redirect('/login');

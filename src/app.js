@@ -34,10 +34,6 @@ const createApp = (appConfig, sessions, games, logger, fs) => {
   const users = getUsers(usersData, fs);
   const parseBodyParams = express.urlencoded({ extended: true });
   app.use(parseBodyParams);
-  app.use((request, response, next) => {
-    request.bodyParams = request.body;
-    next();
-  });
   app.use(injectCookies);
   app.use(injectSession(sessions));
   app.use(logRequest(logger));

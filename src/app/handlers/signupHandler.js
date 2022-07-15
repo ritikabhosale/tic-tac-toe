@@ -23,8 +23,8 @@ const signup = (path, users, fs) => (request, response) => {
     return;
   }
 
-  const user = request.bodyParams;
-  if (fieldsAbsent(request.bodyParams)) {
+  const user = request.body;
+  if (fieldsAbsent(request.body)) {
     const status = { success: false, message: 'All fields required' };
     response.status(400);
     response.json(status);

@@ -16,7 +16,7 @@ const registerMove = games => (request, response) => {
   }
 
   const { gameId, username } = request.session;
-  const { id } = request.bodyParams;
+  const { id } = request.body;
   const game = games[gameId];
   game.updateGame(id, username);
   response.end();

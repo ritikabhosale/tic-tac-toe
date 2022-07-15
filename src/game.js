@@ -28,11 +28,15 @@ class Game {
     return this.#players.length < 2;
   }
 
-  get id() {
-    return this.#id;
+  #isCellMarked(cellId) {
+    return this.#board[cellId - 1] !== '';
   }
 
   updateGame(cellId, currentPlayerId) {
+    if (this.#isCellMarked(cellId)) {
+      return;
+    }
+
     const currentPlayer = this.#players.find(({ playerId }) =>
       playerId === currentPlayerId);
     if (currentPlayerId !== this.#lastMovedPlayer.playerId) {

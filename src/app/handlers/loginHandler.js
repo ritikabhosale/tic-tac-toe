@@ -21,21 +21,21 @@ const login = (sessions, users) => (request, response) => {
     return;
   }
 
-  if (fieldsAbsent(request.bodyParams)) {
+  if (fieldsAbsent(request.body)) {
     const status = { success: false, message: 'All fields required' };
     response.status(400);
     response.json(status);
     return;
   }
 
-  if (!authenticateUser(users, request.bodyParams)) {
+  if (!authenticateUser(users, request.body)) {
     const status = { success: false, message: 'Invalid username or password' };
     response.status(422);
     response.json(status);
     return;
   }
 
-  const session = createSession(request.bodyParams.username);
+  const session = createSession(request.body.username);
   response.cookie('sessionId', session.sessionId);
   sessions[session.sessionId] = session;
   response.redirect('/play-game')
