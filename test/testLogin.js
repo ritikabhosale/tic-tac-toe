@@ -42,7 +42,7 @@ describe('GET /login', () => {
     const sessions = { '1': { sessionId: '1', username: 'a@b.c', time: '12' } };
     const req = request(createApp(serverConfig, sessions, {}, () => { }, fs));
     req.get('/login')
-      .set('Cookie', ['sessionId=1'])
+      .set('Cookie', 'sessionId=1')
       .expect(302, done)
   });
 });
@@ -65,7 +65,6 @@ describe('POST /login', () => {
       .set('content-type', 'application/x-www-form-urlencoded')
       .expect(302, done)
       .expect('location', '/play-game')
-      .expect('content-type', /html/)
   });
 
   it('should not allow unauthenticated user', (done) => {
@@ -93,6 +92,5 @@ describe('POST /login', () => {
     req.post('/login')
       .set('Cookie', ['sessionId=1'])
       .expect(302, done)
-      .expect('content-type', /html/)
   });
 });

@@ -1,8 +1,6 @@
 const serveGameAPI = games => (request, response) => {
   if (!request.session) {
-    response.statusCode = 302;
-    response.setHeader('location', '/login');
-    response.end();
+    response.redirect('/login');
     return;
   }
 

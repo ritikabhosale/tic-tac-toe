@@ -1,3 +1,5 @@
+const express = require('express');
+
 const { Router } = require('server/server/router.js');
 const { notFound } = require('./app/handlers/notFound.js');
 const { serveFileContent } = require('./app/handlers/staticContent.js');
@@ -31,30 +33,37 @@ const getUsers = (filePath, fs) => {
   }
 };
 
-const createApp = (serverConfig, sessions, games, logger, fs) => {
-  const users = getUsers(serverConfig.usersData, fs);
-  const router = new Router();
-  const app = router.createRouter();
-  router.middleware(parseBodyParams);
-  router.middleware(parseSearchParams);
-  router.middleware(injectCookies);
-  router.middleware(injectSession(sessions));
-  router.middleware(setContentType);
-  router.middleware(logRequest(logger));
-  router.get('/login', serveLoginForm(loginFormTemplate, fs));
-  router.post('/login', login(sessions, users));
-  router.get('/logout', logout(sessions));
-  router.get('/sign-up', serveSignupForm(signupFormTemplate, fs));
-  router.post('/sign-up', signup(serverConfig.usersData, users, fs));
-  router.get('/play-game', playGame(optionsTemplate, fs));
-  router.get('/host', hostHandler(games));
-  router.get('/join', serveJoinForm(joinTemplate, fs));
-  router.post('/join', joinHandler(games));
-  router.get('/api/game', serveGameAPI(games));
-  router.get('/game', gameHandler(boardTemplate, fs));
-  router.post('/register-move', registerMove(games));
-  router.get('/', serveFileContent(serverConfig.root, fs));
-  router.middleware(notFound);
+const createApp = (appConfig, sessions, games, logger, fs) => {
+  const app = express();
+  const { usersData, root } = appConfig;
+  const users = getUsers(usersData, fs);
+  // const router = new Router();
+  // const app = router.createRouter();
+  // app.use(parseSearchParams);
+  // app.use(setContentType);
+  const parseBodyParams = express.urlencoded({ extended: true });
+  app.use(parseBodyParams);
+  app.use((request, response, next) => {
+    request.bodyParams = request.body;
+    next();
+  });
+  app.use(injectCookies);
+  app.use(injectSession(sessions));
+  app.use(logRequest(logger));
+  app.get('/login', serveLoginForm(loginFormTemplate, fs));
+  app.post('/login', login(sessions, users));
+  app.get('/logout', logout(sessions));
+  app.get('/sign-up', serveSignupForm(signupFormTemplate, fs));
+  app.post('/sign-up', signup(appConfig.usersData, users, fs));
+  app.get('/play-game', playGame(optionsTemplate, fs));
+  app.get('/host', hostHandler(games));
+  app.get('/join', serveJoinForm(joinTemplate, fs));
+  app.post('/join', joinHandler(games));
+  app.get('/api/game', serveGameAPI(games));
+  app.get('/game', gameHandler(boardTemplate, fs));
+  app.post('/register-move', registerMove(games));
+  app.use(express.static(root));
+  app.use(notFound);
   return app;
 };
 

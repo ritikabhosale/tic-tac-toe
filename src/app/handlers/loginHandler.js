@@ -17,45 +17,38 @@ const fieldsAbsent = ({ username, password }) => {
 
 const login = (sessions, users) => (request, response) => {
   if (request.session) {
-    response.setHeader('location', '/');
-    response.statusCode = 302;
-    response.end();
+    response.redirect('/');
     return;
   }
 
   if (fieldsAbsent(request.bodyParams)) {
-    response.statusCode = 400;
-    response.setHeader('content-type', 'application/json');
     const status = { success: false, message: 'All fields required' };
-    response.end(JSON.stringify(status));
+    response.status(400);
+    response.json(status);
     return;
   }
 
   if (!authenticateUser(users, request.bodyParams)) {
-    response.statusCode = 422;
-    response.setHeader('content-type', 'application/json');
     const status = { success: false, message: 'Invalid username or password' };
-    response.end(JSON.stringify(status));
+    response.status(422);
+    response.json(status);
     return;
   }
 
   const session = createSession(request.bodyParams.username);
-  response.setHeader('set-cookie', 'sessionId=' + session.sessionId);
+  response.cookie('sessionId', session.sessionId);
   sessions[session.sessionId] = session;
-  response.setHeader('location', '/play-game');
-  response.statusCode = 302;
-  response.end();
+  response.redirect('/play-game')
   return;
 };
 
 const serveLoginForm = (formTemplate, fs) => (request, response) => {
   if (request.session) {
-    response.setHeader('location', '/');
-    response.statusCode = 302;
-    response.end();
+    response.redirect('/');
     return;
   }
   const form = fs.readFileSync(formTemplate, 'utf8');
+  response.type('html')
   response.end(form);
 };
 

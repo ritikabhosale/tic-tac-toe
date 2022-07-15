@@ -15,6 +15,14 @@ const mockReadFile = (expectedFile, content) => {
   };
 };
 
+const mockReadFileSync = (expectedFile, expectedEncoding, content) => {
+  return (fileName, encoding) => {
+    assert.strictEqual(fileName, expectedFile);
+    assert.strictEqual(encoding, expectedEncoding);
+    return content;
+  };
+};
+
 describe('GET /abc', () => {
   const serverConfig = { root: '/someDir' };
   const fs = {
@@ -30,22 +38,17 @@ describe('GET /abc', () => {
   });
 });
 
-describe('GET /hello.txt', () => {
-  const serverConfig = { root: '/public' };
-  const fs = {
-    readFile: mockReadFile('/public/hello.txt', 'hello'),
-    readFileSync: () => { },
-  };
-
-  it('should route to  hello.txt', (done) => {
-    const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
-    req.get('/hello.txt')
-      .expect(200, 'hello', done)
-      .expect('content-type', /plain/)
+describe('GET /index.html', () => {
+  const serverConfig = { root: './public' };
+  it('should route to  index.html', (done) => {
+    const req = request(createApp(serverConfig, {}, {}, () => { }, {}));
+    req.get('/index.html')
+      .expect(200, done)
+      .expect('content-type', /html/)
   });
 
   it('should route to not found for bye.txt', (done) => {
-    const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
+    const req = request(createApp(serverConfig, {}, {}, () => { }, {}));
     req.get('/bye.txt')
       .expect(404, 'Page Not Found', done)
       .expect('content-type', /plain/)
@@ -65,7 +68,7 @@ describe('GET /logout', () => {
     req.get('/logout')
       .set('Cookie', ['sessionId=1'])
       .expect(302, done)
-      .expect('set-cookie', 'sessionId=0;max-age:0')
+      .expect('set-cookie', 'sessionId=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT')
   });
 
   it('should redirect to home page if user tries to logout without logging in', (done) => {
@@ -73,5 +76,28 @@ describe('GET /logout', () => {
     req.get('/logout')
       .expect(302, done)
       .expect('location', '/')
+  });
+});
+
+describe('GET /join', () => {
+  const serverConfig = { root: '/public' };
+  const fs = {
+    readFile: () => { },
+    readFileSync: mockReadFileSync('./src/app/template/join.html', 'utf8', 'join template'),
+  };
+
+  it('should serve the join page', (done) => {
+    const sessions = { '1': { sessionId: '1', username: 'a@b.c', time: '12' } };
+    const req = request(createApp(serverConfig, sessions, {}, () => { }, fs));
+    req.get('/join')
+      .set('Cookie', ['sessionId=1'])
+      .expect(200, 'join template', done)
+  });
+
+  it('should redirect to login when user is not logged in', (done) => {
+    const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
+    req.get('/join')
+      .expect('location', '/login')
+      .expect(302, done)
   });
 });

@@ -4,19 +4,19 @@ const hostHandler = games => {
   let gameId = 0;
   return (request, response) => {
     let location = '/login';
+
     if (request.session) {
       location = '/game';
+
       const game = new Game(gameId);
-      games[gameId] = game;
       game.addPlayer(request.session.username);
+
+      games[gameId] = game;
       request.session.gameId = gameId;
       gameId++;
     }
 
-    response.statusCode = 302;
-    response.setHeader('location', location);
-    response.end()
-
+    response.redirect(location);
     return;
   };
 }

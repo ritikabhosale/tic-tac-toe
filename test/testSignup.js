@@ -69,7 +69,6 @@ describe('POST /sign-up', () => {
     const status = { success: true, message: 'Signup Successfull' };
     req.post('/sign-up')
       .send('username=rishabh&password=bcd')
-      .set('content-type', 'application/x-www-form-urlencoded')
       .expect(200, status, done)
       .expect('content-type', /json/)
   });
@@ -79,7 +78,6 @@ describe('POST /sign-up', () => {
     const status = { success: false, message: 'User already exists' };
     req.post('/sign-up')
       .send('username=abc&password=bcd')
-      .set('content-type', 'application/x-www-form-urlencoded')
       .expect(409, status, done)
       .expect('content-type', /json/)
   });
@@ -88,7 +86,6 @@ describe('POST /sign-up', () => {
     const status = { success: false, message: 'All fields required' };
     const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
     req.post('/sign-up')
-      .set('content-type', 'application/x-www-form-urlencoded')
       .expect(400, status, done)
       .expect('content-type', /json/)
   });

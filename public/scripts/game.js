@@ -6,7 +6,6 @@ const createXHR = ({ method, url, body }, onload) => {
 };
 
 const getMessage = ({ ready, result }) => {
-  console.log(ready, result);
   if (!ready) {
     return 'Waiting for another player';
   }
@@ -93,7 +92,9 @@ const stopGame = boardElement => {
 
 const registerMove = (event) => {
   const { id } = event.target;
-  const request = { url: '/register-move', method: 'POST', body: `id=${id}` };
+  const formData = new FormData();
+  formData.append('id', id);
+  const request = { url: '/register-move', method: 'POST', body: new URLSearchParams(formData) };
   createXHR(request, () => {
     const request = { url: '/api/game', method: 'GET' };
     createXHR(request, generateBoard);
@@ -120,7 +121,6 @@ const generateBoard = (xhr) => {
 };
 
 const main = () => {
-  console.log('hello in main');
   const request = { url: '/api/game', method: 'GET' };
   setInterval(() => {
     createXHR(request, generateBoard);

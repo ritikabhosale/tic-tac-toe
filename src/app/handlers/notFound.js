@@ -1,6 +1,6 @@
 const notFound = (request, response, next) => {
-  response.statusCode = 404;
-  response.setHeader('content-type', 'text/plain');
+  response.status(404);
+  response.type('text/plain');
   response.end('Page Not Found');
   return;
 };

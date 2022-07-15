@@ -1,10 +1,20 @@
 const gameHandler = (boardTemplate, fs) => (request, response) => {
+  if (!request.session) {
+    response.redirect('/login');
+    return;
+  }
+
   const gamePage = fs.readFileSync(boardTemplate, 'utf8');
-  response.setHeader('content-type', 'text/html');
+  response.type('html')
   response.end(gamePage);
 };
 
 const registerMove = games => (request, response) => {
+  if (!request.session) {
+    response.redirect('/login');
+    return;
+  }
+
   const { gameId, username } = request.session;
   const { id } = request.bodyParams;
   const game = games[gameId];
