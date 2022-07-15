@@ -4,6 +4,12 @@ const serveGameAPI = games => (request, response) => {
     return;
   }
 
+  if (!request.session.gameId) {
+    response.status(409);
+    response.json({ success: false, message: 'You are not part of any game' });
+    return;
+  }
+
   const { gameId } = request.session;
   const game = games[gameId];
   response.setHeader('content-type', 'application/json');
