@@ -1,14 +1,9 @@
 const express = require('express');
 
-const { Router } = require('server/server/router.js');
 const { notFound } = require('./app/handlers/notFound.js');
-const { serveFileContent } = require('./app/handlers/staticContent.js');
 const { logRequest } = require('./app/handlers/logRequest.js');
-const { setContentType } = require('./app/handlers/setContentType.js');
-const { parseBodyParams } = require('./app/handlers/parseBodyParams.js');
 const { serveLoginForm, login } = require('./app/handlers/loginHandler.js');
 const { serveSignupForm, signup } = require('./app/handlers/signupHandler.js');
-const { parseSearchParams } = require('./app/handlers/parseSearchParams.js');
 const { playGame } = require('./app/handlers/play.js');
 const { hostHandler } = require('./app/handlers/hostHandler.js');
 const { serveJoinForm, joinHandler } = require('./app/handlers/joinHandler.js');
@@ -37,10 +32,6 @@ const createApp = (appConfig, sessions, games, logger, fs) => {
   const app = express();
   const { usersData, root } = appConfig;
   const users = getUsers(usersData, fs);
-  // const router = new Router();
-  // const app = router.createRouter();
-  // app.use(parseSearchParams);
-  // app.use(setContentType);
   const parseBodyParams = express.urlencoded({ extended: true });
   app.use(parseBodyParams);
   app.use((request, response, next) => {
