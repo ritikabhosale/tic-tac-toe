@@ -9,17 +9,28 @@ const serveJoinForm = (template, fs) => (request, response) => {
   return;
 };
 
+const gameExists = (games, gameId) => {
+  return games[gameId] ? true : false;
+};
+
 const joinHandler = games => (request, response) => {
   const gameId = request.bodyParams['game-id'];
-  const game = games[gameId];
 
   if (!request.session) {
     response.redirect('/login');
     return;
   }
 
+  if (!gameExists(games, gameId)) {
+    response.status(404);
+    response.json({ success: false, message: 'Game doesn\'t exist.' });
+    return;
+  }
+
+  const game = games[gameId];
   if (!game.isSpotAvailable()) {
-    response.end('Game already has two players.');
+    response.status(422);
+    response.json({ success: false, message: 'Game already has two players.' });
     return;
   }
 
