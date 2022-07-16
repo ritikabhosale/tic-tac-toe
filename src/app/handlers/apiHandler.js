@@ -1,6 +1,6 @@
-const isUserInAGame = ({ gameId }) => {
-  return gameId !== undefined;
-}
+const gameExists = (games, gameId) => {
+  return games[gameId] ? true : false;
+};
 
 const serveGameAPI = games => (request, response) => {
   if (!request.session) {
@@ -8,13 +8,13 @@ const serveGameAPI = games => (request, response) => {
     return;
   }
 
-  if (!isUserInAGame(request.session)) {
-    response.status(409);
-    response.json({ success: false, message: 'You are not part of any game' });
+  const { gameId } = request.params;
+  if (!gameExists(games, gameId)) {
+    response.status(404);
+    response.json({ success: false, message: 'Game doesn\'t exist.' });
     return;
   }
 
-  const { gameId } = request.session;
   const game = games[gameId];
   response.setHeader('content-type', 'application/json');
   response.end(game.toJSON());

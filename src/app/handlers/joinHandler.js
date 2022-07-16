@@ -36,7 +36,7 @@ const joinHandler = games => (request, response) => {
 
   game.addPlayer(request.session.username);
   request.session.gameId = gameId;
-  response.redirect('/game');
+  response.redirect('/game/' + gameId);
   return;
 }
 

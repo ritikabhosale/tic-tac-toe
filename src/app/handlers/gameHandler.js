@@ -1,3 +1,7 @@
+const isUserInAGame = ({ gameId }) => {
+  return gameId !== undefined;
+};
+
 const gameHandler = (boardTemplate, fs) => (request, response) => {
   if (!request.session) {
     response.redirect('/login');
@@ -15,10 +19,13 @@ const registerMove = games => (request, response) => {
     return;
   }
 
-  const { gameId, username } = request.session;
-  const { id } = request.body;
-  const game = games[gameId];
-  game.updateGame(id, username);
+  if (isUserInAGame(request.session)) {
+    const { gameId, username } = request.session;
+    const { id } = request.body;
+    const game = games[gameId];
+    game.updateGame(id, username);
+  }
+
   response.end();
 };
 

@@ -57,7 +57,7 @@ describe('POST /join', () => {
     req.post('/join')
       .set('cookie', 'sessionId=1')
       .send('game-id=0')
-      .expect('location', '/game')
+      .expect('location', '/game/0')
       .expect(302, done)
   });
 

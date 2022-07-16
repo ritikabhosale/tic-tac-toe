@@ -46,8 +46,8 @@ const createApp = (appConfig, sessions, games, logger, fs) => {
   app.get('/host', hostHandler(games));
   app.get('/join', serveJoinForm(joinTemplate, fs));
   app.post('/join', joinHandler(games));
-  app.get('/api/game', serveGameAPI(games));
-  app.get('/game', gameHandler(boardTemplate, fs));
+  app.get('/api/game/:gameId', serveGameAPI(games));
+  app.get('/game/:gameId', gameHandler(boardTemplate, fs));
   app.post('/register-move', registerMove(games));
   app.use(express.static(root));
   app.use(notFound);

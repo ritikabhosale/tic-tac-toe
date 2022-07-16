@@ -6,7 +6,7 @@ const hostHandler = games => {
     let location = '/login';
 
     if (request.session) {
-      location = '/game';
+      location = '/game/' + gameId;
 
       const game = new Game(gameId);
       game.addPlayer(request.session.username);

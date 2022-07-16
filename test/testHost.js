@@ -13,13 +13,12 @@ describe('GET /host', () => {
 
   it('should redirect to game', (done) => {
     const serverConfig = { root: '/public' };
-    const games = {};
     const sessions = { '1': { sessionId: '1', username: 'a@b.c', time: '12' } };
-    const res = request(createApp(serverConfig, sessions, games, () => { }, {}));
+    const res = request(createApp(serverConfig, sessions, {}, () => { }, {}));
 
     res.get('/host')
       .set('cookie', 'sessionId=1')
-      .expect('location', '/game')
+      .expect('location', '/game/0')
       .expect(302, done)
   });
 });

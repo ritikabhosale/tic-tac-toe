@@ -36,7 +36,6 @@ class Game {
     if (this.#isCellMarked(cellId)) {
       return;
     }
-
     const currentPlayer = this.#players.find(({ playerId }) =>
       playerId === currentPlayerId);
     if (currentPlayerId !== this.#lastMovedPlayer.playerId) {

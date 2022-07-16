@@ -1,1 +1,14 @@
-{"ritika":{"username":"ritika","password":"ritika"},"abc":{"username":"abc","password":"abc"},"rishabh":{"username":"rishabh","password":"ris"}}
+{
+  "ritika": {
+    "username": "ritika",
+    "password": "ritika"
+  },
+  "abc": {
+    "username": "abc",
+    "password": "abc"
+  },
+  "rishabh": {
+    "username": "rishabh",
+    "password": "ris"
+  }
+}
