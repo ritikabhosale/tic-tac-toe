@@ -2,6 +2,8 @@ body {
   width: 960px;
   margin: 0 auto;
   text-align: center;
+  background-color: black;
+  color: white;
 }
 
 .page-wrapper {
@@ -29,8 +31,10 @@ h2 {
 .row .cell {
   height: 100px;
   width: 100px;
-  background-color: aliceblue;
-  border: 1px solid black;
+  color: white;
+  /* background-color: aliceblue; */
+  background-color: black;
+  border: 0.5px solid grey;
   font-size: 40px;
   display: flex;
   justify-content: center;
