@@ -1,5 +1,5 @@
 const serveSignupForm = (path, fs) => (request, response) => {
-  if (request.session) {
+  if (request.session.isPopulated) {
     response.redirect('/');
     return;
   }
@@ -18,7 +18,7 @@ const userExists = (users, { username }) => {
 }
 
 const signup = (path, users, fs) => (request, response) => {
-  if (request.session) {
+  if (request.session.isPopulated) {
     response.redirect('/');
     return;
   }

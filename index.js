@@ -6,5 +6,5 @@ const appConfig = {
   usersData: './data/users.json'
 };
 
-const app = createApp(appConfig, {}, {}, console.log, fs);
+const app = createApp(appConfig, {}, fs);
 app.listen(8888, () => console.log('Listening on http://localhost:8888'));

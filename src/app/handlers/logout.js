@@ -1,12 +1,10 @@
-const logout = sessions => (request, response) => {
-  if (!request.session) {
+const logout = (request, response) => {
+  if (!request.session.isPopulated) {
     response.redirect('/');
     return;
   }
-  const { sessionId } = request.session;
-  delete sessions[sessionId];
 
-  response.clearCookie('sessionId');
+  request.session = null;
   response.redirect('/');
   return;
 };

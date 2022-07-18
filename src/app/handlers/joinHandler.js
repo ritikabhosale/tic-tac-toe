@@ -1,5 +1,5 @@
 const serveJoinForm = (template, fs) => (request, response) => {
-  if (!request.session) {
+  if (!request.session.isPopulated) {
     response.redirect('/login');
     return;
   }
@@ -16,7 +16,7 @@ const gameExists = (games, gameId) => {
 const joinHandler = games => (request, response) => {
   const gameId = request.body['game-id'];
 
-  if (!request.session) {
+  if (!request.session.isPopulated) {
     response.redirect('/login');
     return;
   }

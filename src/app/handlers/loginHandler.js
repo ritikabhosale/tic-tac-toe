@@ -1,6 +1,6 @@
 const createSession = username => {
   const time = new Date();
-  return { sessionId: time.getTime(), time, username };
+  return { time, username };
 };
 
 const authenticateUser = (users, userDetails) => {
@@ -15,8 +15,8 @@ const fieldsAbsent = ({ username, password }) => {
   return !username || !password;
 };
 
-const login = (sessions, users) => (request, response) => {
-  if (request.session) {
+const login = (users) => (request, response) => {
+  if (request.session.isPopulated) {
     response.redirect('/');
     return;
   }
@@ -35,15 +35,13 @@ const login = (sessions, users) => (request, response) => {
     return;
   }
 
-  const session = createSession(request.body.username);
-  response.cookie('sessionId', session.sessionId);
-  sessions[session.sessionId] = session;
+  request.session = createSession(request.body.username);
   response.redirect('/play-game')
   return;
 };
 
 const serveLoginForm = (formTemplate, fs) => (request, response) => {
-  if (request.session) {
+  if (request.session.isPopulated) {
     response.redirect('/');
     return;
   }

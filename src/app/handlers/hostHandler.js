@@ -5,7 +5,7 @@ const hostHandler = games => {
   return (request, response) => {
     let location = '/login';
 
-    if (request.session) {
+    if (request.session.isPopulated) {
       location = '/game/' + gameId;
 
       const game = new Game(gameId);

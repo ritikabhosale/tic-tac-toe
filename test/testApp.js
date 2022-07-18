@@ -23,7 +23,7 @@ describe('GET /abc', () => {
   };
 
   it('should route to not found', (done) => {
-    const req = request(createApp(serverConfig, {}, {}, fs));
+    const req = request(createApp(serverConfig, {}, fs));
     req.get('/abc')
       .expect(404, 'Page Not Found', done)
       .expect('content-type', /plain/)
@@ -33,14 +33,14 @@ describe('GET /abc', () => {
 describe('GET /index.html', () => {
   const serverConfig = { root: './public' };
   it('should route to  index.html', (done) => {
-    const req = request(createApp(serverConfig, {}, {}, {}));
+    const req = request(createApp(serverConfig, {}, {}));
     req.get('/index.html')
       .expect(200, done)
       .expect('content-type', /html/)
   });
 
   it('should route to not found for bye.txt', (done) => {
-    const req = request(createApp(serverConfig, {}, {}, {}));
+    const req = request(createApp(serverConfig, {}, {}));
     req.get('/bye.txt')
       .expect(404, 'Page Not Found', done)
       .expect('content-type', /plain/)
@@ -54,17 +54,8 @@ describe('GET /logout', () => {
     readFileSync: () => { },
   };
 
-  it('should send setCookie header with maxage 0.', (done) => {
-    const sessions = { '1': { sessionId: '1', username: 'a@b.c', time: '12' } };
-    const req = request(createApp(serverConfig, sessions, {}, fs));
-    req.get('/logout')
-      .set('Cookie', ['sessionId=1'])
-      .expect(302, done)
-      .expect('set-cookie', 'sessionId=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT')
-  });
-
   it('should redirect to home page if user tries to logout without logging in', (done) => {
-    const req = request(createApp(serverConfig, {}, {}, fs));
+    const req = request(createApp(serverConfig, {}, fs));
     req.get('/logout')
       .expect(302, done)
       .expect('location', '/')

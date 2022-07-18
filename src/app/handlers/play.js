@@ -1,5 +1,5 @@
 const playGame = (optionsTemplate, fs) => (request, response) => {
-  if (!request.session) {
+  if (!request.session.isPopulated) {
     response.redirect('/login');
     return;
   }

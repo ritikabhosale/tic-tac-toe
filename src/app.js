@@ -1,8 +1,9 @@
 const express = require('express');
 
 const morgan = require('morgan');
+const cookieSession = require('cookie-session');
+const cookieParser = require('cookie-parser');
 const { notFound } = require('./app/handlers/notFound.js');
-const { logRequest } = require('./app/handlers/logRequest.js');
 const { serveLoginForm, login } = require('./app/handlers/loginHandler.js');
 const { serveSignupForm, signup } = require('./app/handlers/signupHandler.js');
 const { playGame } = require('./app/handlers/play.js');
@@ -10,8 +11,8 @@ const { hostHandler } = require('./app/handlers/hostHandler.js');
 const { serveJoinForm, joinHandler } = require('./app/handlers/joinHandler.js');
 const { gameHandler, registerMove } = require('./app/handlers/gameHandler.js');
 const { serveGameAPI } = require('./app/handlers/apiHandler.js');
-const { injectCookies } = require('./app/handlers/injectCookies.js');
-const { injectSession } = require('./app/handlers/injectSession.js');
+// const { injectCookies } = require('./app/handlers/injectCookies.js');
+// const { injectSession } = require('./app/handlers/injectSession.js');
 const { logout } = require('./app/handlers/logout.js');
 
 const optionsTemplate = './src/app/template/options.html';
@@ -29,18 +30,22 @@ const getUsers = (filePath, fs) => {
   }
 };
 
-const createApp = (appConfig, sessions, games, fs) => {
+const createApp = (appConfig, games, fs) => {
   const app = express();
   const { usersData, root } = appConfig;
   const users = getUsers(usersData, fs);
   const parseBodyParams = express.urlencoded({ extended: true });
   app.use(parseBodyParams);
-  app.use(injectCookies);
-  app.use(injectSession(sessions));
+  app.use(cookieParser());
+  app.use(cookieSession({
+    name: 'sessionId',
+    keys: ['hello']
+  }));
+
   app.use(morgan('tiny'));
   app.get('/login', serveLoginForm(loginFormTemplate, fs));
-  app.post('/login', login(sessions, users));
-  app.get('/logout', logout(sessions));
+  app.post('/login', login(users));
+  app.get('/logout', logout);
   app.get('/sign-up', serveSignupForm(signupFormTemplate, fs));
   app.post('/sign-up', signup(appConfig.usersData, users, fs));
   app.get('/play-game', playGame(optionsTemplate, fs));

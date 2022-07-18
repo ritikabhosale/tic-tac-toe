@@ -2,74 +2,75 @@ const { createApp } = require('../src/app.js');
 const request = require('supertest');
 const assert = require('assert');
 
-const mockReadFile = (expectedFile, content) => {
-  return (fileName, callback) => {
-
-    try {
-      assert.strictEqual(fileName, expectedFile);
-    } catch (error) {
-      const err = 'can\'t read file';
-      callback(err);
-      return;
-    }
-    callback(null, content);
-  };
-};
-
-const mockReadFileSync = (expectedFile, expectedEncoding, content) => {
+const mockReadFileSync = (expected, expectedEncoding) => {
+  let index = 0;
   return (fileName, encoding) => {
-    assert.strictEqual(fileName, expectedFile);
+    const { content, file } = expected[index];
+    assert.strictEqual(fileName, file);
     assert.strictEqual(encoding, expectedEncoding);
+    index++;
     return content;
   };
 };
 
 describe('GET /login', () => {
-  const serverConfig = { root: '/public' };
+  const users = { rishabh: { username: 'rishabh', password: 'ris' } };
+  const serverConfig = { root: '/public', usersData: './data/users.json' };
   const fs = {
-    readFile: mockReadFile('/public/hello.txt', 'hello'),
-    readFileSync: mockReadFileSync('./src/app/template/login.html', 'utf8', 'template')
+    readFile: () => { },
+    readFileSync: mockReadFileSync([
+      { file: './data/users.json', content: JSON.stringify(users) },
+      { file: './src/app/template/login.html', content: 'login template' }
+    ], 'utf8')
   };
 
   it('should serve login page', (done) => {
-    const req = request(createApp(serverConfig, {}, {}, fs));
+    const req = request(createApp(serverConfig, {}, fs));
     req.get('/login')
-      .expect(200, 'template', done)
+      .expect(200, 'login template', done)
       .expect('content-type', /html/)
   });
 
+  let cookie;
+  const app = createApp(serverConfig, {}, fs);
+
+  before((done) => {
+    const loginRequest = request(app);
+    loginRequest.post('/login')
+      .send('username=rishabh&password=ris')
+      .end((err, res) => {
+        cookie = res.header['set-cookie'];
+        done();
+      });
+  })
   it('should redirect to home page when already logged in.', (done) => {
-    const sessions = { '1': { sessionId: '1', username: 'a@b.c', time: '12' } };
-    const req = request(createApp(serverConfig, sessions, {}, fs));
+    const req = request(app);
     req.get('/login')
-      .set('Cookie', 'sessionId=1')
+      .set('Cookie', cookie)
       .expect(302, done)
   });
 });
 
 describe('POST /login', () => {
-  const serverConfig = { root: '/someDir', usersData: '/data/users.json' };
+  const serverConfig = { root: '/someDir', usersData: './data/users.json' };
   const users = { 'abc': { username: 'abc', password: '123' } };
   const fs = {
     readFile: () => { },
-    readFileSync: mockReadFileSync(
-      '/data/users.json',
-      'utf8',
-      JSON.stringify(users)),
+    readFileSync: mockReadFileSync([
+      { file: './data/users.json', content: JSON.stringify(users) }, { file: './data/users.json', content: JSON.stringify(users) }], 'utf8')
   };
 
   it('should redirect to /play-game', (done) => {
-    const req = request(createApp(serverConfig, {}, {}, fs));
+    const req = request(createApp(serverConfig, {}, fs));
     req.post('/login')
       .send('username=abc&password=123')
-      .set('content-type', 'application/x-www-form-urlencoded')
       .expect(302, done)
       .expect('location', '/play-game')
   });
 
   it('should not allow unauthenticated user', (done) => {
     const status = { success: false, message: 'Invalid username or password' };
-    const req = request(createApp(serverConfig, {}, {}, fs));
+    const req = request(createApp(serverConfig, {}, fs));
     req.post('/login')
       .send('username=abcd&password=123')
       .set('content-type', 'application/x-www-form-urlencoded')
@@ -77,20 +78,31 @@ describe('POST /login', () => {
       .expect('content-type', /json/)
   });
 
+
   it('should not allow if mandatory fields are empty', (done) => {
     const status = { success: false, message: 'All fields required' };
-    const req = request(createApp(serverConfig, {}, {}, fs));
+    const req = request(createApp(serverConfig, {}, fs));
     req.post('/login')
       .set('content-type', 'application/x-www-form-urlencoded')
       .expect(400, status, done)
       .expect('content-type', /json/)
   });
 
-  it('should redirect send message already logged in', (done) => {
-    const sessions = { '1': { sessionId: '1', username: 'a@b.c', time: '12' } };
-    const req = request(createApp(serverConfig, sessions, {}, fs));
+  const app = createApp(serverConfig, {}, fs);
+  before((done) => {
+    const loginRequest = request(app);
+    loginRequest.post('/login')
+      .send('username=abc&password=123')
+      .end((err, res) => {
+        cookie = res.header['set-cookie'];
+        done();
+      });
+  })
+
+  it('should redirect to /login if already logged in', (done) => {
+    const req = request(app);
     req.post('/login')
-      .set('Cookie', ['sessionId=1'])
+      .set('Cookie', cookie)
       .expect(302, done)
   });
 });

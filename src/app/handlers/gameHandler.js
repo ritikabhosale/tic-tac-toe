@@ -3,7 +3,7 @@ const isUserInAGame = ({ gameId }) => {
 };
 
 const gameHandler = (boardTemplate, fs) => (request, response) => {
-  if (!request.session) {
+  if (!request.session.isPopulated) {
     response.redirect('/login');
     return;
   }
@@ -14,7 +14,7 @@ const gameHandler = (boardTemplate, fs) => (request, response) => {
 };
 
 const registerMove = games => (request, response) => {
-  if (!request.session) {
+  if (!request.session.isPopulated) {
     response.redirect('/login');
     return;
   }

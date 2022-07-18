@@ -3,13 +3,14 @@ const gameExists = (games, gameId) => {
 };
 
 const serveGameAPI = games => (request, response) => {
-  if (!request.session) {
+  if (!request.session.isPopulated) {
     response.redirect('/login');
     return;
   }
 
   const { gameId } = request.params;
   if (!gameExists(games, gameId)) {
+    console.log('does not exist');
     response.status(404);
     response.json({ success: false, message: 'Game doesn\'t exist.' });
     return;
