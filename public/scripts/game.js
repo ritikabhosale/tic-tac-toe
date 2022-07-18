@@ -107,11 +107,9 @@
     cleanGame(gameElement);
 
     const game = JSON.parse(xhr.response);
-    console.log(game);
     const template = convertToTemplate(game.board);
 
-    console.log(template);
-    drawElement(['div.gameId', game.gameId], gameElement);
+    drawElement(['div.gameId', 'Game Id: ' + game.gameId], gameElement);
     drawElement(template, gameElement);
     drawElement(['div.message', getMessage(game)], gameElement);
 
