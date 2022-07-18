@@ -11,8 +11,6 @@ const { hostHandler } = require('./app/handlers/hostHandler.js');
 const { serveJoinForm, joinHandler } = require('./app/handlers/joinHandler.js');
 const { gameHandler, registerMove } = require('./app/handlers/gameHandler.js');
 const { serveGameAPI } = require('./app/handlers/apiHandler.js');
-// const { injectCookies } = require('./app/handlers/injectCookies.js');
-// const { injectSession } = require('./app/handlers/injectSession.js');
 const { logout } = require('./app/handlers/logout.js');
 
 const optionsTemplate = './src/app/template/options.html';
