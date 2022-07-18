@@ -1,5 +1,6 @@
 const express = require('express');
 
+const morgan = require('morgan');
 const { notFound } = require('./app/handlers/notFound.js');
 const { logRequest } = require('./app/handlers/logRequest.js');
 const { serveLoginForm, login } = require('./app/handlers/loginHandler.js');
@@ -28,7 +29,7 @@ const getUsers = (filePath, fs) => {
   }
 };
 
-const createApp = (appConfig, sessions, games, logger, fs) => {
+const createApp = (appConfig, sessions, games, fs) => {
   const app = express();
   const { usersData, root } = appConfig;
   const users = getUsers(usersData, fs);
@@ -36,7 +37,7 @@ const createApp = (appConfig, sessions, games, logger, fs) => {
   app.use(parseBodyParams);
   app.use(injectCookies);
   app.use(injectSession(sessions));
-  app.use(logRequest(logger));
+  app.use(morgan('tiny'));
   app.get('/login', serveLoginForm(loginFormTemplate, fs));
   app.post('/login', login(sessions, users));
   app.get('/logout', logout(sessions));

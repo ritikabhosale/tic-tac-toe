@@ -32,7 +32,7 @@ describe('GET /login', () => {
   };
 
   it('should serve login page', (done) => {
-    const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
+    const req = request(createApp(serverConfig, {}, {}, fs));
     req.get('/login')
       .expect(200, 'template', done)
       .expect('content-type', /html/)
@@ -40,7 +40,7 @@ describe('GET /login', () => {
 
   it('should redirect to home page when already logged in.', (done) => {
     const sessions = { '1': { sessionId: '1', username: 'a@b.c', time: '12' } };
-    const req = request(createApp(serverConfig, sessions, {}, () => { }, fs));
+    const req = request(createApp(serverConfig, sessions, {}, fs));
     req.get('/login')
       .set('Cookie', 'sessionId=1')
       .expect(302, done)
@@ -59,7 +59,7 @@ describe('POST /login', () => {
   };
 
   it('should redirect to /play-game', (done) => {
-    const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
+    const req = request(createApp(serverConfig, {}, {}, fs));
     req.post('/login')
       .send('username=abc&password=123')
       .set('content-type', 'application/x-www-form-urlencoded')
@@ -69,7 +69,7 @@ describe('POST /login', () => {
 
   it('should not allow unauthenticated user', (done) => {
     const status = { success: false, message: 'Invalid username or password' };
-    const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
+    const req = request(createApp(serverConfig, {}, {}, fs));
     req.post('/login')
       .send('username=abcd&password=123')
       .set('content-type', 'application/x-www-form-urlencoded')
@@ -79,7 +79,7 @@ describe('POST /login', () => {
 
   it('should not allow if mandatory fields are empty', (done) => {
     const status = { success: false, message: 'All fields required' };
-    const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
+    const req = request(createApp(serverConfig, {}, {}, fs));
     req.post('/login')
       .set('content-type', 'application/x-www-form-urlencoded')
       .expect(400, status, done)
@@ -88,7 +88,7 @@ describe('POST /login', () => {
 
   it('should redirect send message already logged in', (done) => {
     const sessions = { '1': { sessionId: '1', username: 'a@b.c', time: '12' } };
-    const req = request(createApp(serverConfig, sessions, {}, () => { }, fs));
+    const req = request(createApp(serverConfig, sessions, {}, fs));
     req.post('/login')
       .set('Cookie', ['sessionId=1'])
       .expect(302, done)

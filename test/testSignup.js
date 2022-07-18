@@ -29,7 +29,7 @@ describe('GET /sign-up', () => {
   };
 
   it('should serve signup page', (done) => {
-    const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
+    const req = request(createApp(serverConfig, {}, {}, fs));
     req.get('/sign-up')
       .expect(200, 'signup template', done)
       .expect('content-type', /html/)
@@ -37,7 +37,7 @@ describe('GET /sign-up', () => {
 
   it('should redirect to home page when already logged in.', (done) => {
     const sessions = { '1': { sessionId: '1', username: 'a@b.c', time: '12' } };
-    const req = request(createApp(serverConfig, sessions, {}, () => { }, fs));
+    const req = request(createApp(serverConfig, sessions, {}, fs));
     req.get('/sign-up')
       .set('Cookie', ['sessionId=1'])
       .expect(302, done)
@@ -65,7 +65,7 @@ describe('POST /sign-up', () => {
   };
 
   it('should persist user data', (done) => {
-    const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
+    const req = request(createApp(serverConfig, {}, {}, fs));
     const status = { success: true, message: 'Signup Successfull' };
     req.post('/sign-up')
       .send('username=rishabh&password=bcd')
@@ -74,7 +74,7 @@ describe('POST /sign-up', () => {
   });
 
   it('should not allow duplicate username', (done) => {
-    const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
+    const req = request(createApp(serverConfig, {}, {}, fs));
     const status = { success: false, message: 'User already exists' };
     req.post('/sign-up')
       .send('username=abc&password=bcd')
@@ -84,7 +84,7 @@ describe('POST /sign-up', () => {
 
   it('should not allow if mandatory fields are empty', (done) => {
     const status = { success: false, message: 'All fields required' };
-    const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
+    const req = request(createApp(serverConfig, {}, {}, fs));
     req.post('/sign-up')
       .expect(400, status, done)
       .expect('content-type', /json/)
@@ -92,7 +92,7 @@ describe('POST /sign-up', () => {
 
   it('should redirect to home page when already logged in', (done) => {
     const sessions = { '1': { sessionId: '1', username: 'a@b.c', time: '12' } };
-    const req = request(createApp(serverConfig, sessions, {}, () => { }, fs));
+    const req = request(createApp(serverConfig, sessions, {}, fs));
     req.post('/sign-up')
       .set('Cookie', ['sessionId=1'])
       .expect(302, done)

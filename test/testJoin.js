@@ -19,14 +19,14 @@ describe('GET /join', () => {
 
   it('should serve the join page', (done) => {
     const sessions = { '1': { sessionId: '1', username: 'a@b.c', time: '12' } };
-    const req = request(createApp(serverConfig, sessions, {}, () => { }, fs));
+    const req = request(createApp(serverConfig, sessions, {}, fs));
     req.get('/join')
       .set('Cookie', ['sessionId=1'])
       .expect(200, 'join template', done)
   });
 
   it('should redirect to login when user is not logged in', (done) => {
-    const req = request(createApp(serverConfig, {}, {}, () => { }, fs));
+    const req = request(createApp(serverConfig, {}, {}, fs));
     req.get('/join')
       .expect('location', '/login')
       .expect(302, done)
@@ -38,7 +38,7 @@ describe('POST /join', () => {
   const sessions = { '1': { sessionId: '1', username: 'a@b.c', time: '12' } };
 
   it('should redirect to login when user is not logged in', (done) => {
-    const req = request(createApp(serverConfig, {}, {}, () => { }, {}));
+    const req = request(createApp(serverConfig, {}, {}, {}));
     req.post('/join')
       .expect('location', '/login')
       .expect(302, done)
@@ -53,7 +53,7 @@ describe('POST /join', () => {
       }
     };
 
-    const req = request(createApp(serverConfig, sessions, games, () => { }, {}));
+    const req = request(createApp(serverConfig, sessions, games, {}));
     req.post('/join')
       .set('cookie', 'sessionId=1')
       .send('game-id=0')
@@ -71,7 +71,7 @@ describe('POST /join', () => {
       }
     };
 
-    const req = request(createApp(serverConfig, sessions, games, () => { }, {}));
+    const req = request(createApp(serverConfig, sessions, games, {}));
     req.post('/join')
       .set('cookie', 'sessionId=1')
       .send('game-id=0')
@@ -88,7 +88,7 @@ describe('POST /join', () => {
       }
     };
 
-    const req = request(createApp(serverConfig, sessions, games, () => { }, {}));
+    const req = request(createApp(serverConfig, sessions, games, {}));
     req.post('/join')
       .set('cookie', 'sessionId=1')
       .send('game-id=1')
